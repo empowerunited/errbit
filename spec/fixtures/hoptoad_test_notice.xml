@@ -87,7 +87,7 @@
     </backtrace>
   </error>
   <request>
-    <url>http://example.org/verify</url>
+    <url>http://example.org/verify?p=1&q[s]=sort_order desc</url>
     <component>application</component>
     <action>verify</action>
     <params>
