@@ -236,7 +236,7 @@ describe App do
 
     it 'captures the request' do
       @notice = App.report_error!(@xml)
-      @notice.request['url'].should == 'http://example.org/verify'
+      @notice.request['url'].should start_with('http://example.org/verify')
       @notice.request['params']['controller'].should == 'application'
     end
 

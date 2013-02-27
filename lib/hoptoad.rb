@@ -8,7 +8,7 @@ module Hoptoad
   end
 
   def self.parse_xml!(xml)
-    parsed = ActiveSupport::XmlMini.backend.parse(xml)['notice'] || raise(ApiVersionError)
+    parsed = ActiveSupport::XmlMini.backend.parse(escape_urls(xml))['notice'] || raise(ApiVersionError)
     processor = get_version_processor(parsed['version'])
     processor.process_notice(parsed)
   end
@@ -19,6 +19,18 @@ module Hoptoad
       when /2\.[01234]/; Hoptoad::V2
       else;            raise ApiVersionError
       end
+    end
+
+    def self.escape_urls(xml_string)
+      matches = xml_string.scan(/<url>http(?:s)?:\/\/([^<]+)<\/url>/) +
+                  xml_string.scan(/"http(?:s)?:\/\/([^"]+)"/) +
+                  xml_string.scan(/\shttp(?:s)?:\/\/([^\s]+)\s/)
+
+      matches.flatten.each do |url|
+        escaped_url = url.gsub(/&(?!amp;)/, '&amp;')
+        xml_string.gsub!(url, escaped_url)
+      end
+      xml_string
     end
 end
 
