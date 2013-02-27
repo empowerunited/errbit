@@ -22,7 +22,10 @@ module Hoptoad
     end
 
     def self.escape_urls(xml_string)
-      matches = xml_string.scan(/"http(?:s)?:\/\/([^"]+)"/)
+      matches = xml_string.scan(/<url>http(?:s)?:\/\/([^<]+)<\/url>/) +
+                  xml_string.scan(/"http(?:s)?:\/\/([^"]+)"/) +
+                  xml_string.scan(/\shttp(?:s)?:\/\/([^\s]+)\s/)
+
       matches.flatten.each do |url|
         escaped_url = url.gsub(/&(?!amp;)/, '&amp;')
         xml_string.gsub!(url, escaped_url)
